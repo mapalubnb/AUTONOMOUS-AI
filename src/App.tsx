@@ -412,7 +412,9 @@ export default function App() {
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
               <div className="bg-black/40 border border-white/5 px-8 py-4 rounded-xl font-mono text-sm md:text-lg break-all flex items-center gap-4 group">
                 <span className="text-zinc-400 group-hover:text-white transition-colors">
-                  {TOKEN_CONFIG.contractAddress}
+                  {TOKEN_CONFIG.contractAddress === "0x0000000000000000000000000000000000000000" 
+                    ? "TBA (To Be Announced)" 
+                    : TOKEN_CONFIG.contractAddress}
                 </span>
                 <button 
                   onClick={copyAddress}
