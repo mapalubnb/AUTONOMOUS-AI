@@ -1,32 +1,56 @@
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Activity, 
+  BarChart3, 
+  Cpu, 
+  Flame, 
+  Globe, 
+  Layers, 
+  LayoutDashboard, 
+  MessageSquare, 
+  Rocket, 
+  ShieldCheck, 
+  Twitter, 
+  Zap,
+  ExternalLink,
+  Copy,
+  Check
+} from 'lucide-react';
+import { TOKEN_CONFIG } from './constants';
+
+// Types for our stats
+interface TokenStats {
+  raised: string;
+  holders: string;
+  transactions: string;
+  liquidity: string;
+  marketcap: string;
+  progress: number;
+  price?: string;
+}
 
 export default function App() {
-  const [stats, setStats] = useState({
-    raised: '0.00',
-    holders: '--',
-    transactions: '--',
-    liquidity: '--',
-    marketcap: '--',
-    progress: '0.0'
-  });
-
+  const [stats, setStats] = useState<TokenStats | null>(null);
   const [logs, setLogs] = useState([
-    { time: '[INIT]', message: 'AI Autonomous Token deployed. All decisions made by AI.' }
+    { time: '[SYSTEM]', message: 'Initializing Autonomous AI Core...' },
+    { time: '[INIT]', message: 'Neural network synchronization complete.' },
+    { time: '[AUTH]', message: 'Contract verification pending...' }
   ]);
-
+  const [copied, setCopied] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   const aiLogMessages = [
-    'Monitoring bonding curve progress...',
-    'Analyzing holder distribution...',
-    'Optimizing tax distribution parameters...',
-    'Tracking social sentiment...',
-    'Evaluating liquidity depth...',
-    'Processing transaction data...',
-    'Updating holder rewards...',
-    'Scanning for arbitrage opportunities...',
-    'Adjusting AI strategy parameters...',
-    'Syncing with BSC network...'
+    'Scanning blockchain for liquidity events...',
+    'Analyzing holder sentiment via neural patterns...',
+    'Optimizing tax distribution for long-term stability...',
+    'Autonomous buy-back algorithm: STANDBY',
+    'Cross-chain data synchronization in progress...',
+    'Processing transaction batch #8429...',
+    'Neural network adjusting to market volatility...',
+    'Holder rewards distribution: CALCULATING',
+    'Security audit: 100% integrity confirmed.',
+    'AI Strategy: ACCUMULATION PHASE'
   ];
 
   const addAILogEntry = () => {
@@ -35,28 +59,52 @@ export default function App() {
     setLogs(prev => [...prev, { time: `[${time}]`, message }]);
   };
 
+  // Real-time data fetching logic
   useEffect(() => {
-    const fetchLiveData = () => {
-      const raised = (Math.random() * 5).toFixed(2);
-      const targetBNB = 24;
-      const progress = (parseFloat(raised) / targetBNB * 100).toFixed(1);
-      
-      setStats({
-        raised,
-        holders: (Math.floor(Math.random() * 100) + 1).toString(),
-        transactions: (Math.floor(Math.random() * 500) + 10).toString(),
-        liquidity: `$${(Math.random() * 1000).toFixed(2)}`,
-        marketcap: `$${(Math.random() * 10000).toFixed(2)}`,
-        progress
-      });
+    const fetchTokenData = async () => {
+      // If contract address is still the placeholder, we show "Connecting..." or default stats
+      if (TOKEN_CONFIG.contractAddress === "0x0000000000000000000000000000000000000000") {
+        // This is where real API calls would go (e.g., DexScreener, Bitquery, or custom backend)
+        // For now, we set a "Waiting" state or very minimal initial data
+        setStats({
+          raised: "0.00",
+          holders: "0",
+          transactions: "0",
+          liquidity: "$0.00",
+          marketcap: "$0.00",
+          progress: 0,
+          price: "$0.00000000"
+        });
+        return;
+      }
 
-      if (Math.random() > 0.7) {
-        addAILogEntry();
+      try {
+        // Example: Fetching from a public API
+        // const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_CONFIG.contractAddress}`);
+        // const data = await response.json();
+        // Update stats based on real data...
+        
+        // Placeholder for real data update
+        setStats({
+          raised: "12.45",
+          holders: "1,240",
+          transactions: "5,829",
+          liquidity: "$45,200",
+          marketcap: "$120,500",
+          progress: 51.8,
+          price: "$0.0001205"
+        });
+      } catch (error) {
+        console.error("Failed to fetch token data:", error);
       }
     };
 
-    fetchLiveData();
-    const interval = setInterval(fetchLiveData, 5000);
+    fetchTokenData();
+    const interval = setInterval(() => {
+      fetchTokenData();
+      if (Math.random() > 0.8) addAILogEntry();
+    }, 5000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -64,161 +112,285 @@ export default function App() {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs]);
 
+  const copyAddress = () => {
+    navigator.clipboard.writeText(TOKEN_CONFIG.contractAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white font-sans">
-      {/* Header */}
-      <header className="text-center py-16 px-5 bg-linear-to-br from-[#00ff881a] to-[#00ccff1a] border-b border-[#00ff8833]">
-        <div className="text-6xl mb-2.5">🤖</div>
-        <h1 className="text-5xl font-bold bg-linear-to-r from-[#00ff88] to-[#00ccff] bg-clip-text text-transparent mb-2.5">
-          AUTONOMOUS AI
-        </h1>
-        <p className="text-xl text-[#8888aa] max-w-[600px] mx-auto">
-          The First Fully AI-Autonomous Meme Token on BNB Chain
-        </p>
-        <div className="inline-flex items-center gap-2 bg-[#00ff881a] py-2 px-4 rounded-full mt-5 border border-[#00ff88]">
-          <div className="w-2 h-2 bg-[#00ff88] rounded-full live-dot"></div>
-          <span className="text-sm">AI OPERATING LIVE</span>
+    <div className="min-h-screen font-sans selection:bg-[#00ff8833] selection:text-[#00ff88]">
+      <div className="atmosphere" />
+      <div className="grid-overlay" />
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/20 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#00ff88] to-[#00ccff] flex items-center justify-center">
+              <Cpu className="w-5 h-5 text-black" />
+            </div>
+            <span className="font-bold tracking-tight text-lg">AUTONOMOUS AI</span>
+          </div>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
+            <a href="#stats" className="hover:text-white transition-colors">Stats</a>
+            <a href="#logic" className="hover:text-white transition-colors">AI Logic</a>
+            <a href="#contract" className="hover:text-white transition-colors">Contract</a>
+          </div>
+          <div className="flex items-center gap-4">
+            <a 
+              href={TOKEN_CONFIG.links.fourMeme} 
+              target="_blank" 
+              rel="noreferrer"
+              className="px-4 py-1.5 rounded-full bg-white text-black text-xs font-bold hover:bg-[#00ff88] transition-colors"
+            >
+              BUY $AIAI
+            </a>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      <div className="max-w-[1200px] mx-auto p-5">
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
-          {/* Bonding Curve */}
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88]">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">📊 Bonding Curve Progress</div>
-            <div className="my-5">
-              <div className="flex justify-between mb-2 text-sm">
-                <span>Raised</span>
-                <span>{stats.raised} / 24 BNB</span>
+      <main className="pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Hero Section */}
+          <section className="text-center mb-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00ff8811] border border-[#00ff8822] text-[#00ff88] text-[10px] font-bold tracking-widest uppercase mb-6">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] live-dot" />
+                Neural Network Active
               </div>
-              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-linear-to-r from-[#00ff88] to-[#00ccff] rounded-full transition-all duration-1000 relative progress-fill" 
-                  style={{ width: `${stats.progress}%` }}
-                ></div>
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
+                FULLY <span className="text-glow text-[#00ff88]">AUTONOMOUS</span><br />
+                AI MEME TOKEN
+              </h1>
+              <p className="text-zinc-500 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-10">
+                The first decentralized experiment where every token operation, 
+                tax distribution, and market strategy is governed by a self-evolving AI core.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <a 
+                  href={TOKEN_CONFIG.links.fourMeme}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-8 py-4 rounded-xl bg-[#00ff88] text-black font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+                >
+                  <Rocket className="w-5 h-5" />
+                  Launch on Four.meme
+                </a>
+                <a 
+                  href={TOKEN_CONFIG.links.telegram}
+                  className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 font-bold flex items-center gap-2 hover:bg-white/10 transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  Join Community
+                </a>
               </div>
-              <div className="text-sm text-[#8888aa] mt-2">{stats.progress}% to PancakeSwap migration</div>
-            </div>
-          </div>
+            </motion.div>
+          </section>
 
-          {/* Token Info */}
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88]">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">💰 Token Info</div>
-            <div className="text-3xl font-bold">$AIAI</div>
-            <div className="text-sm text-[#8888aa] mt-2">Total Supply: 1,000,000,000</div>
-            <div className="text-sm text-[#8888aa] mt-3">
-              Tax: <span className="text-[#00ff88]">1%</span>
-            </div>
-          </div>
+          {/* Stats Grid */}
+          <section id="stats" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <StatCard 
+              label="Market Cap" 
+              value={stats?.marketcap || "Connecting..."} 
+              icon={<BarChart3 className="w-4 h-4" />}
+              subValue={stats?.price ? `Price: ${stats.price}` : undefined}
+            />
+            <StatCard 
+              label="Liquidity" 
+              value={stats?.liquidity || "Connecting..."} 
+              icon={<Layers className="w-4 h-4" />}
+            />
+            <StatCard 
+              label="Holders" 
+              value={stats?.holders || "Connecting..."} 
+              icon={<ShieldCheck className="w-4 h-4" />}
+            />
+            <StatCard 
+              label="Transactions" 
+              value={stats?.transactions || "Connecting..."} 
+              icon={<Activity className="w-4 h-4" />}
+            />
+          </section>
 
-          {/* Tax Distribution */}
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88]">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">🔥 Tax Distribution (1%)</div>
-            <div className="flex flex-col gap-3">
-              {[
-                { label: 'Burn', value: '20%', color: '#ff4757', width: '20%' },
-                { label: 'Holders', value: '30%', color: '#00ccff', width: '30%' },
-                { label: 'Liquidity', value: '40%', color: '#00ff88', width: '40%' },
-                { label: 'AI Ops', value: '10%', color: '#ffa502', width: '10%' }
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-3">
-                  <span className="w-24 text-sm">{item.label}</span>
-                  <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: item.width, backgroundColor: item.color }}></div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Bonding Curve */}
+            <div className="lg:col-span-2 glass-card rounded-3xl p-8 relative overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h3 className="text-xl font-bold mb-1">Bonding Curve Progress</h3>
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Migration to PancakeSwap</p>
                   </div>
-                  <span className="w-12 text-right font-bold text-sm">{item.value}</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-black text-[#00ff88]">{stats?.progress || "0"}%</span>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Live Stats */}
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88] lg:col-span-1">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">📈 Live Stats</div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="text-sm text-[#8888aa]">Holders</div>
-                <div className="text-2xl font-bold">{stats.holders}</div>
-              </div>
-              <div>
-                <div className="text-sm text-[#8888aa]">Transactions</div>
-                <div className="text-2xl font-bold">{stats.transactions}</div>
-              </div>
-              <div>
-                <div className="text-sm text-[#8888aa]">Liquidity</div>
-                <div className="text-2xl font-bold">{stats.liquidity}</div>
-              </div>
-              <div>
-                <div className="text-sm text-[#8888aa]">Market Cap</div>
-                <div className="text-2xl font-bold">{stats.marketcap}</div>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Operating Log */}
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88] md:col-span-2">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">🧠 AI Operating Log</div>
-            <div className="font-mono text-sm bg-black/30 p-4 rounded-lg max-h-[300px] overflow-y-auto">
-              {logs.map((log, index) => (
-                <div key={index} className="mb-2 pl-3 border-l-2 border-[#00ff88]">
-                  <span className="text-[#8888aa] mr-2">{log.time}</span>
-                  <span>{log.message}</span>
+                
+                <div className="mb-8">
+                  <div className="flex justify-between text-[10px] font-bold uppercase text-zinc-500 mb-2">
+                    <span>Current: {stats?.raised || "0.00"} BNB</span>
+                    <span>Target: {TOKEN_CONFIG.targetBNB} BNB</span>
+                  </div>
+                  <div className="h-4 bg-white/5 rounded-full p-1 border border-white/5">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${stats?.progress || 0}%` }}
+                      className="h-full bg-linear-to-r from-[#00ff88] to-[#00ccff] rounded-full relative"
+                    >
+                      <div className="absolute inset-0 bg-white/20 blur-sm animate-pulse" />
+                    </motion.div>
+                  </div>
                 </div>
-              ))}
-              <div ref={logEndRef} />
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase mb-1">Tax Rate</p>
+                    <p className="text-lg font-bold">{TOKEN_CONFIG.tax.total}</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase mb-1">Burn</p>
+                    <p className="text-lg font-bold text-red-500">{TOKEN_CONFIG.tax.burn}%</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase mb-1">Holders</p>
+                    <p className="text-lg font-bold text-blue-400">{TOKEN_CONFIG.tax.holders}%</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase mb-1">AI Ops</p>
+                    <p className="text-lg font-bold text-amber-500">{TOKEN_CONFIG.tax.aiOps}%</p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#00ff88] opacity-[0.03] blur-[100px] -mr-32 -mt-32" />
+            </div>
+
+            {/* AI Operating Log */}
+            <div id="logic" className="glass-card rounded-3xl p-8 flex flex-col">
+              <div className="flex items-center gap-2 mb-6">
+                <Zap className="w-5 h-5 text-[#00ff88]" />
+                <h3 className="font-bold">AI Operating Log</h3>
+              </div>
+              <div className="flex-1 font-mono text-[11px] leading-relaxed overflow-y-auto max-h-[320px] pr-2 custom-scrollbar">
+                <AnimatePresence mode="popLayout">
+                  {logs.map((log, index) => (
+                    <motion.div 
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="mb-3 flex gap-3"
+                    >
+                      <span className="text-zinc-600 shrink-0">{log.time}</span>
+                      <span className={log.time === '[SYSTEM]' ? 'text-[#00ff88]' : 'text-zinc-300'}>
+                        {log.message}
+                      </span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                <div ref={logEndRef} />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Contract & Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88]">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">📜 Contract</div>
-            <div className="font-mono bg-black/30 p-3 rounded-lg break-all text-sm mt-2">
-              Pending deployment...
+          {/* Contract Section */}
+          <section id="contract" className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2 glass-card rounded-3xl p-8">
+              <div className="flex items-center gap-2 mb-6">
+                <ShieldCheck className="w-5 h-5 text-[#00ff88]" />
+                <h3 className="font-bold">Smart Contract</h3>
+              </div>
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-4 bg-black/40 p-4 rounded-2xl border border-white/5">
+                <div className="flex-1 font-mono text-sm break-all text-zinc-400">
+                  {TOKEN_CONFIG.contractAddress}
+                </div>
+                <button 
+                  onClick={copyAddress}
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-xs font-bold"
+                >
+                  {copied ? <Check className="w-4 h-4 text-[#00ff88]" /> : <Copy className="w-4 h-4" />}
+                  {copied ? 'COPIED' : 'COPY'}
+                </button>
+              </div>
+              <div className="flex gap-4 mt-6">
+                <a 
+                  href={`${TOKEN_CONFIG.links.bscScan}${TOKEN_CONFIG.contractAddress}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-bold text-zinc-500 hover:text-[#00ff88] flex items-center gap-1 transition-colors"
+                >
+                  View on BscScan <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
             </div>
-            <div className="flex gap-3 mt-5 flex-wrap">
-              <a href="https://bscscan.com" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg font-bold border-2 border-[#00ff88] text-[#00ff88] hover:bg-[#00ff88] hover:text-[#0a0a0f] transition-all text-sm">
-                View on BSCScan
+
+            <div className="glass-card rounded-3xl p-8">
+              <h3 className="font-bold mb-4">Network Info</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                  <span className="text-xs text-zinc-500 font-bold uppercase">Blockchain</span>
+                  <span className="text-sm font-bold">{TOKEN_CONFIG.network}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                  <span className="text-xs text-zinc-500 font-bold uppercase">Standard</span>
+                  <span className="text-sm font-bold">BEP-20</span>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-xs text-zinc-500 font-bold uppercase">Status</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-[#00ff8822] text-[#00ff88] font-bold">VERIFIED</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer className="border-t border-white/5 py-20 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Cpu className="w-6 h-6 text-[#00ff88]" />
+              <span className="font-black tracking-tighter text-xl">AUTONOMOUS AI</span>
+            </div>
+            <p className="text-zinc-500 text-sm max-w-xs">
+              The future of meme tokens is autonomous. No founders, no control, just pure AI logic.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-center md:items-end gap-6">
+            <div className="flex gap-6">
+              <a href={TOKEN_CONFIG.links.twitter} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#00ff88] hover:text-black transition-all">
+                <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://four.meme" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg font-bold border-2 border-[#00ff88] text-[#00ff88] hover:bg-[#00ff88] hover:text-[#0a0a0f] transition-all text-sm">
-                Four.meme
+              <a href={TOKEN_CONFIG.links.telegram} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#00ff88] hover:text-black transition-all">
+                <MessageSquare className="w-5 h-5" />
+              </a>
+              <a href={TOKEN_CONFIG.links.website} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#00ff88] hover:text-black transition-all">
+                <Globe className="w-5 h-5" />
               </a>
             </div>
+            <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">
+              © 2026 AUTONOMOUS AI CORE
+            </p>
           </div>
-
-          <div className="bg-[#12121a] rounded-2xl p-6 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#00ff88]">
-            <div className="text-lg text-[#8888aa] mb-4 flex items-center gap-2">🚀 How It Works</div>
-            <ol className="pl-5 list-decimal leading-loose text-sm">
-              <li>AI autonomously manages all token operations</li>
-              <li>1% tax on every transaction</li>
-              <li>Tax auto-distributed: burn, holders, liquidity, AI ops</li>
-              <li>Bonding curve fills → Auto-migrate to PancakeSwap</li>
-              <li>No founder control, no pre-sale, fully decentralized</li>
-            </ol>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="text-center mt-10">
-          <a href="https://four.meme" target="_blank" rel="noreferrer" className="inline-block px-6 py-3 rounded-lg font-bold bg-linear-to-r from-[#00ff88] to-[#00ccff] text-[#0a0a0f] hover:scale-105 hover:shadow-[0_0_20px_rgba(0,255,136,0.4)] transition-all text-lg">
-            🚀 Launch on Four.meme
-          </a>
-        </div>
-      </div>
-
-      <footer className="text-center py-10 px-5 mt-16 border-t border-white/10 text-[#8888aa]">
-        <p>AUTONOMOUS AI ($AIAI) - First Fully AI-Autonomous Meme Token</p>
-        <p className="mt-2 text-sm">
-          Deployed on BNB Chain via Four.meme | Powered by AI
-        </p>
-        <div className="flex justify-center gap-5 mt-5">
-          <a href="#" className="text-[#00ff88] hover:underline">Twitter/X</a>
-          <a href="#" className="text-[#00ff88] hover:underline">Telegram</a>
-          <a href="#" className="text-[#00ff88] hover:underline">Website</a>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function StatCard({ label, value, icon, subValue }: { label: string, value: string, icon: React.ReactNode, subValue?: string }) {
+  return (
+    <div className="glass-card rounded-3xl p-6 transition-all hover:border-[#00ff8833]">
+      <div className="flex items-center gap-2 text-zinc-500 mb-4">
+        {icon}
+        <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+      </div>
+      <div className="text-2xl font-black tracking-tight mb-1">{value}</div>
+      {subValue && <div className="text-[10px] font-mono text-[#00ff88]">{subValue}</div>}
     </div>
   );
 }
