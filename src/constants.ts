@@ -2,8 +2,8 @@ export const TOKEN_CONFIG = {
   name: "AUTONOMOUS AI",
   symbol: "AIAI",
   description: "The first AI token designed by BINANCE AI PRO with a USD1 liquidity pool, pioneering autonomous market dynamics on BNB Chain.",
-  // Replace this with the real contract address when available
-  contractAddress: "0x0000000000000000000000000000000000000000",
+  // Real contract address provided by user
+  contractAddress: "0xF251F83e40a78868FcfA3FA4599Dad6494E46034",
   network: "BNB Chain",
   targetBNB: 24,
   totalSupply: "1,000,000,000",
