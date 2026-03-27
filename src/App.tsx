@@ -293,8 +293,8 @@ export default function App() {
                 
                 <div className="mb-10">
                   <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">
-                    <span>Accumulated: {stats?.raised || "0.00"} BNB</span>
-                    <span>Threshold: {TOKEN_CONFIG.targetBNB} BNB</span>
+                    <span>Accumulated: {stats?.raised || "0.00"} USD1</span>
+                    <span>Threshold: {TOKEN_CONFIG.targetUSD1.toLocaleString()} USD1</span>
                   </div>
                   <div className="h-6 bg-white/5 rounded-full p-1.5 border border-white/5 overflow-hidden shimmer">
                     <motion.div 

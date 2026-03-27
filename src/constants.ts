@@ -5,7 +5,7 @@ export const TOKEN_CONFIG = {
   // Contract address placeholder - to be updated by user
   contractAddress: "0x0000000000000000000000000000000000000000",
   network: "BNB Chain",
-  targetBNB: 24,
+  targetUSD1: 12000,
   totalSupply: "1,000,000,000",
   tax: {
     total: "1%",
