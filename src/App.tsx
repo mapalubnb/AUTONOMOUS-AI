@@ -66,6 +66,7 @@ export default function App() {
   ]);
   const [copied, setCopied] = useState(false);
   const [bootSequence, setBootSequence] = useState(true);
+  const logContainerRef = useRef<HTMLDivElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,7 +145,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
   }, [logs]);
 
   const copyAddress = () => {
@@ -156,10 +159,19 @@ export default function App() {
   if (bootSequence) {
     return (
       <div className="min-h-screen bg-[#050507] flex items-center justify-center font-mono">
-        <div className="text-[#00ff88] text-xl animate-pulse">
-          SYSTEM_INITIALIZING...<br />
-          LOADING_NEURAL_CORES...<br />
-          ESTABLISHING_AUTONOMOUS_PROTOCOL...
+        <div className="text-[#00ff88] text-xl text-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="text-4xl font-black mb-4 tracking-tighter">BINANCE AI PRO</div>
+            <div className="text-sm opacity-50">
+              SYSTEM_INITIALIZING...<br />
+              LOADING_NEURAL_CORES...<br />
+              ESTABLISHING_AUTONOMOUS_PROTOCOL...
+            </div>
+          </motion.div>
         </div>
       </div>
     );
@@ -345,7 +357,7 @@ export default function App() {
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500/50" />
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto space-y-3 font-mono text-[10px] custom-scrollbar pr-2">
+              <div ref={logContainerRef} className="flex-1 overflow-y-auto space-y-3 font-mono text-[10px] custom-scrollbar pr-2">
                 {logs.length === 0 && (
                   <div className="text-zinc-600 italic">Initializing neural link...</div>
                 )}
