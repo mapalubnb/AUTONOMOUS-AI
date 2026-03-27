@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #00ff88;
+  --secondary: #00ccff;
+  --bg: #0a0a0f;
+  --card: #12121a;
+  --text: #ffffff;
+  --text-dim: #8888aa;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.live-dot {
+  animation: pulse 2s infinite;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes slamIn {
+  0% { transform: scale(2) translateY(-100px) skewX(-10deg); opacity: 0; }
+  100% { transform: scale(1) translateY(0) skewX(-10deg); opacity: 1; }
+}
+
