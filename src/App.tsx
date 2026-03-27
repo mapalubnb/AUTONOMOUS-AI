@@ -57,7 +57,13 @@ const NeuralBackground = () => {
 
 export default function App() {
   const [stats, setStats] = useState<TokenStats | null>(null);
-  const [logs, setLogs] = useState<AILog[]>([]);
+  const [logs, setLogs] = useState<AILog[]>([
+    { id: 1, timestamp: new Date().toLocaleTimeString(), message: "Neural link established. System online.", type: 'info' },
+    { id: 2, timestamp: new Date().toLocaleTimeString(), message: "Scanning BNB Chain for autonomous liquidity signals...", type: 'info' },
+    { id: 3, timestamp: new Date().toLocaleTimeString(), message: "USD1 Liquidity Pool synchronization complete.", type: 'info' },
+    { id: 4, timestamp: new Date().toLocaleTimeString(), message: "AI Intelligence Module v2.4.0 loaded successfully.", type: 'info' },
+    { id: 5, timestamp: new Date().toLocaleTimeString(), message: "Sentiment analysis: Extreme positive momentum detected.", type: 'info' }
+  ]);
   const [copied, setCopied] = useState(false);
   const [bootSequence, setBootSequence] = useState(true);
   const logEndRef = useRef<HTMLDivElement>(null);
@@ -131,8 +137,8 @@ export default function App() {
     fetchTokenData();
     const interval = setInterval(() => {
       fetchTokenData();
-      if (Math.random() > 0.8) addAILogEntry();
-    }, 5000);
+      if (Math.random() > 0.4) addAILogEntry();
+    }, 3000);
     
     return () => clearInterval(interval);
   }, []);
@@ -290,7 +296,26 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/5">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-[9px] text-zinc-500 uppercase font-bold mb-1">Burn_Protocol</p>
+                    <p className="text-base font-bold text-red-500">{TOKEN_CONFIG.tax.burn}%</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-[9px] text-zinc-500 uppercase font-bold mb-1">Holders_Reward</p>
+                    <p className="text-base font-bold text-blue-400">{TOKEN_CONFIG.tax.holders}%</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-[9px] text-zinc-500 uppercase font-bold mb-1">Liquidity_Pool</p>
+                    <p className="text-base font-bold text-[#00ff88]">{TOKEN_CONFIG.tax.liquidity}%</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-[9px] text-zinc-500 uppercase font-bold mb-1">AI_Operations</p>
+                    <p className="text-base font-bold text-amber-500">{TOKEN_CONFIG.tax.aiOps}%</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-6 pt-6 mt-4 border-t border-white/5">
                   <div>
                     <p className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Total_Supply</p>
                     <p className="text-lg font-bold">{TOKEN_CONFIG.totalSupply}</p>
