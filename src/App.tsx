@@ -168,8 +168,7 @@ export default function App() {
                 AI MEME TOKEN
               </h1>
               <p className="text-zinc-500 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-10">
-                The first decentralized experiment where every token operation, 
-                tax distribution, and market strategy is governed by a self-evolving AI core.
+                {TOKEN_CONFIG.description}
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <a 
